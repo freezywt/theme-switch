@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import { ThemeProvider }  from 'styled-components';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import TodoList from './components/TodoList';
+import ThemeSwitcher from './components/ThemeSwitcher/index';
+
+import * as themes from './styles/themes';
+import ThemeContext from './styles/themes/context';
+
+class App extends Component {
+  state = {
+    theme: themes.light
+  };
+
+  toggleTheme = () => {
+    this.setState({ 
+      theme: this.state.theme == themes.light ? themes.dark : themes.light 
+    });
+  };
+
+  render() {
+    return (
+      <div>
+        <ThemeContext.Provider value={this.state}>
+          <ThemeSwitcher toggleTheme={this.toggleTheme} />
+          <ThemeContext.Consumer>
+            { theme => (
+              <ThemeProvider theme={theme}>
+                <TodoList />
+              </ThemeProvider>
+            )}
+          </ThemeContext.Consumer>
+        </ThemeContext.Provider>
+      </div>
+    );
+  }
 }
 
 export default App;
